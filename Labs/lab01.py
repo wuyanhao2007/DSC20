@@ -23,8 +23,10 @@ def team_member_age(ages):
     >>> team_member_age([])
     False
     """
-    # YOUR CODE GOES HERE #
-    return
+    for i in ages:
+        if i > 23:
+            return True
+    return False
 
 # Question 2
 def counter_23_and_over(ages):
@@ -46,8 +48,11 @@ def counter_23_and_over(ages):
     >>> counter_23_and_over([40, 15, 22])
     1
     """
-    # YOUR CODE GOES HERE #
-    return
+    count = 0
+    for i in ages:
+        if i >= 23:
+            count += 1
+    return count
 
 # Question 3
 def company_name_one(first_name, last_name):
@@ -68,8 +73,8 @@ def company_name_one(first_name, last_name):
     >>> company_name_one("THE", "best")
     'Company name is best E'
     """
-    # YOUR CODE GOES HERE #
-    return
+    last_letter = first_name[-1]
+    return "Company name is " + last_name + " " + last_letter
 
 # Question 4
 def company_name_two(names):
@@ -96,8 +101,15 @@ def company_name_two(names):
     >>> company_name_two(names)
     'Y J B '
     """
-    # YOUR CODE GOES HERE #
-    return
+    company_name = ""
+    for i in names:
+        if len(i) == 1:
+            company_name = company_name + i + " "
+            continue
+        first_letter = i[0]
+        last_letter = i[-1]
+        company_name = company_name + first_letter + last_letter
+    return company_name
 
 # Question 5.1
 def new_slogan_concat(words, separator):
@@ -119,8 +131,13 @@ def new_slogan_concat(words, separator):
     >>> new_slogan_concat(words, ".")
     'Work.hard.nap.harder'
     """
-    # YOUR CODE GOES HERE #
-    return
+    slogan = ""
+    for i in range(len(words)):
+        if i == len(words) - 1:
+            slogan = slogan + words[i]
+        else:
+            slogan = slogan + words[i] + separator
+    return slogan
 
 # Question 5.2
 def new_slogan_join(words, separator):
@@ -142,8 +159,8 @@ def new_slogan_join(words, separator):
     >>> new_slogan_join(words, ".")
     'Work.hard.nap.harder'
     """
-    # YOUR CODE GOES HERE #
-    return
+    slogan = separator.join(words)
+    return slogan
 
 # Question 6.1
 def idea_simple_drawing(symbol, repeat):
@@ -164,8 +181,7 @@ def idea_simple_drawing(symbol, repeat):
     >>> idea_simple_drawing("", 2)
     ''
     """
-    # YOUR CODE GOES HERE #
-    return
+    return symbol * repeat
 
 # Question 6.2
 def idea_longer_drawing(symbols, repeats):
@@ -188,8 +204,10 @@ def idea_longer_drawing(symbols, repeats):
     >>> idea_longer_drawing([], [])
     ''
     """
-    # YOUR CODE GOES HERE #
-    return
+    design = ""
+    for i in range(len(symbols)):
+        design = design + symbols[i] * repeats[i]
+    return design
 
 # Question 7.1
 def average_rating(ratings):
@@ -209,8 +227,11 @@ def average_rating(ratings):
     >>> average_rating([4, 2, 1])
     1.33
     """
-    # YOUR CODE GOES HERE #
-    return
+    for i in range(len(ratings)):
+        if ratings[i] < 3.75:
+            ratings[i] = 0
+    average_rate = sum(ratings) / len(ratings)
+    return round(average_rate, 2)
 
 # Question 7.2
 def average_rating_lists(ratings):
@@ -234,8 +255,11 @@ def average_rating_lists(ratings):
     >>> average_rating_lists([])
     -1
     """
-    # YOUR CODE GOES HERE #
-    return
+    highest_rating = -1
+    for i in ratings:
+        if average_rating(i) > highest_rating:
+            highest_rating = average_rating(i)
+    return highest_rating
 
 # Question 7.3
 def average_rating_lists_index(ratings):
@@ -261,8 +285,13 @@ def average_rating_lists_index(ratings):
     >>> average_rating_lists_index([])
     -1
     """
-    # YOUR CODE GOES HERE #
-    return
+    if len(ratings) == 0:
+        return -1
+    else:
+        average_ratings = []
+        for i in ratings:
+            average_ratings.append(average_rating(i))
+        return average_ratings.index(max(average_ratings))
 
 # Question 7.4
 def average_rating_lists_names(ratings, names):
@@ -291,8 +320,11 @@ def average_rating_lists_names(ratings, names):
     >>> average_rating_lists_names([], [])
     ''
     """
-    # YOUR CODE GOES HERE #
-    return
+    index = average_rating_lists_index(ratings)
+    if index > 0:
+        return names[index]
+    else:
+        return ""
 
 # Question 8
 def new_password(text, number, boolean):
@@ -320,8 +352,20 @@ def new_password(text, number, boolean):
     >>> new_password("paint", 21, True)
     'tniap42False'
     """
-    # YOUR CODE GOES HERE #
-    return
+    if type(text) == str and type(number) == int and type(boolean) == bool:
+        password = ""
+        for i in range(len(text) -1, -1, -1):
+            password = password + text[i]
+        if number % 2 == 1:
+            number = number * 2
+        else:
+            number += 1
+        password = password + str(number)
+        boolean = not boolean
+        password = password + str(boolean)
+        return password
+    else:
+         return "ERROR!"
 
 # Question 9
 def colors_with_5(all_colors):
@@ -346,8 +390,11 @@ def colors_with_5(all_colors):
     >>> colors_with_5(all_colors)
     []
     """
-    # YOUR CODE GOES HERE #
-    return
+    five_letter = []
+    for i in all_colors:
+        if len(i) == 5:
+            five_letter.append(i)
+    return five_letter
 
 # Question 10
 def total_for_painting(prices):
@@ -372,5 +419,11 @@ def total_for_painting(prices):
     >>> total_for_painting(prices)
     0
     """
-    # YOUR CODE GOES HERE #
-    return
+    if len(prices) == 0:
+        return 0
+    else:
+        list_price = prices.split(" ")
+        sum_prices = 0
+        for i in list_price:
+            sum_prices += int(i)
+        return sum_prices
