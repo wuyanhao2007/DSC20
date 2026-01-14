@@ -3,9 +3,6 @@ DSC 20 Fall 2025 Homework 01
 Name: Yanhao Wu
 PID: A19061338
 """
-from imp import load_source
-
-
 # Question 1
 def login(fname, lname):
     """
@@ -29,9 +26,11 @@ def login(fname, lname):
     'ia'
     """
     username = ""
-    for i in range(len(fname) -1, -1, -2):
+    interval_first = -2
+    interval_second = 3
+    for i in range(len(fname) -1, -1, interval_first):
         username = username + fname[i]
-    for i in range(0, len(lname), 3):
+    for i in range(0, len(lname), interval_second):
         username = username + lname[i]
     return username
 
@@ -59,13 +58,14 @@ def ages(age1, age2):
     >>> ages(20, 26)
     20
     """
-    if age1 >= 23:
-        if age2 >= 23:
+    legal_age = 23
+    if age1 >= legal_age:
+        if age2 >= legal_age:
             return 'You both can rent!'
         else:
             return age2
     else:
-        if age2 >= 23:
+        if age2 >= legal_age:
             return age1
         else:
             return max(age1, age2)
@@ -100,7 +100,7 @@ def renter(name1, name2, name3):
     index = -1
     longest_number = -1
     name_list = [name1, name2, name3]
-    for i in range(3):
+    for i in range(len(name_list)):
         if longest_number <= len(name_list[i]):
             longest_number = len(name_list[i])
             index = i
@@ -127,9 +127,11 @@ def helper_distance(lst, x2, y2):
     >>> helper_distance([0, 4], 3, 4)
     3.0
     """
+    root = 0.5
+    square = 2
     length = x2 - lst[0]
     width = y2 - lst[1]
-    return (length ** 2 + width ** 2) ** 0.5
+    return (length ** square + width ** square) ** root
 
 # Question 4.2
 def lunch(lunch_places, office_x, office_y, threshold):
@@ -349,10 +351,11 @@ def supervision_teams(team, company_name):
     >>> supervision_teams(["p1"], "1")
     (['1', 'p1'], ['1'])
     """
+    even = 2
     team1 = [company_name]
     team2 = []
     for i in range(len(team)):
-        if i % 2 == 0:
+        if i % even == 0:
             team1.append(team[i])
         else:
             team2.append(team[i])
