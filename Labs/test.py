@@ -1,2 +1,2 @@
-aa = "#"
-print(aa*3)
+dic = {'1' : 2}
+print(dic/2)
