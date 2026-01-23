@@ -30,10 +30,23 @@ def operate_nums(lst):
     >>> operate_nums([2, 3, -2, 0, 5])
     [6, 6, -6, 0, 10]
 
+    >>> operate_nums(3)
+    Traceback (most recent call last):
+    ...
+    AssertionError
+
+    >>> operate_nums([[1, 2, 3]])
+    Traceback (most recent call last):
+    ...
+    AssertionError
+
+    >>> operate_nums([1])
+    [2]
+
     """
     assert isinstance(lst, list)
     assert all([isinstance(i, int) for i in lst])
-    return [i * 3 if i // 2 == 0 else i * 2 for i in lst]
+    return [i * 3 if i % 2 == 0 else i * 2 for i in lst]
 
 # Question 1.2
 def string_lengths(text, nums):
@@ -62,9 +75,24 @@ def string_lengths(text, nums):
     [True, False, False]
 
     # Add at least 3 doctests below here #
+    >>> string_lengths(2, 1)
+    Traceback (most recent call last):
+    ...
+    AssertionError
+
+    >>> string_lengths(['abc', 'abcd', 'abcde'], ['D', 5, 5])
+    Traceback (most recent call last):
+    ...
+    AssertionError
+
+    >>> string_lengths(['abc', 'abcd'], ['D', 5, 5])
+    Traceback (most recent call last):
+    ...
+    AssertionError
     """
     assert all([isinstance(text, list), isinstance(nums, list)])
     assert len(text) == len(nums)
+    assert all(isinstance(i, int) for i in nums)
     assert all(len(i) != 0 for i in text)
     assert all(i >= 0 for i in nums)
     return [len(text[i]) > nums[i] for i in range(len(text))]
@@ -90,6 +118,20 @@ def process_dict(input_dict):
     [15, 2]
 
     # Add at least 3 doctests below here #
+    >>> process_dict(1)
+    Traceback (most recent call last):
+    ...
+    AssertionError
+
+    >>> process_dict({(1, 'd'): ['a', 'b'], (2, ): ['b']})
+    Traceback (most recent call last):
+    ...
+    AssertionError
+
+    >>> process_dict({'i': ['a', 'd'], (2, ): ['b']})
+    Traceback (most recent call last):
+    ...
+    AssertionError
     """
     assert isinstance(input_dict, dict)
     assert all(isinstance(i, tuple) for i in input_dict)
@@ -135,9 +177,20 @@ def unusual_sort(indices, items):
         [4, "four", True, {'one':'two'}, "one"])
     [(4, 0, 0), ('one', 4, 1), (True, 2, 2), \
 ({'one': 'two'}, 3, 3), ('four', 1, 4)]
+
+    >>> unusual_sort([1, 2], \
+    ["zero", "four", "two", "three", "one"])
+    Traceback (most recent call last):
+    ...
+    AssertionError
+
+    >>> unusual_sort(1, 1)
+    Traceback (most recent call last):
+    ...
+    AssertionError
     """
-    assert len(indices) == len(items)
     assert all([isinstance(indices, list), isinstance(items, list)])
+    assert len(indices) == len(items)
     assert all([isinstance(i, int) for i in indices])
     sorted_lst = sorted(indices)
     assert sorted_lst == [i for i in range(len(indices))]
@@ -148,10 +201,8 @@ def unusual_sort(indices, items):
 # Question 3
 def change_input(strange_list):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    replace the lowercase vowels to uppercase,
+    double the integer, and remain the others.
 
     >>> change_input(["3.14IS PIE", "11My aGe iS"])
     ['6.28IS PIE', '22My AGE IS']
@@ -164,9 +215,26 @@ def change_input(strange_list):
     AssertionError
 
     # Add at least 3 doctests below here #
-    """
+    >>> change_input([1])
+    Traceback (most recent call last):
+    ...
+    AssertionError
 
-    return
+    >>> change_input(92992)
+    Traceback (most recent call last):
+    ...
+    AssertionError
+
+    >>> change_input(["asdfa34", ["asldoijf"]])
+    Traceback (most recent call last):
+    ...
+    AssertionError
+    """
+    assert isinstance(strange_list, list)
+    assert all([isinstance(i, str) for i in strange_list])
+    return ["".join([str(int(j) * 2) if j.isdigit() else
+                     j.upper() if j.islower() and j in "aeiou" else
+                     j for j in i]) for i in strange_list]
 
 # Question 4
 def change_input_even_more(strange_list):
