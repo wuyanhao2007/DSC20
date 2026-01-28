@@ -3,6 +3,8 @@ DSC 20 Winter 2026 Lab 04
 Name: Yanhao Wu
 PID: A19061338
 """
+from statsmodels.graphics.tukeyplot import results
+
 
 # Question 1.1
 def problem_1(int_lst, mult_factor):
@@ -201,8 +203,14 @@ def next_round_1(teams, penalty, threshold):
     >>> next_round_1({}, 2, 3)
     []
     """
-    # YOUR CODE GOES HERE #
-    return
+    return list(map(
+        lambda tup: (
+            tup[0], tup[1] - penalty
+        ),list(
+            filter(
+                lambda dic: dic[1] - penalty
+                            >= threshold, teams.items()
+            ))))
 
 
 # Question 3.2
@@ -232,8 +240,11 @@ def next_round_2(teams, penalty, threshold):
     >>> next_round_2({}, 3, 3)
     []
     """
-    # YOUR CODE GOES HERE #
-    return
+    return list(map(
+        lambda tup: (
+            tup[0], len(list(filter(
+            lambda x: x - penalty >= threshold, tup[1]
+        )))), teams.items()))
 
 
 # Question 3.3
@@ -260,5 +271,6 @@ def next_round_3(teams, results):
     >>> next_round_3([], [])
     []
     """
-    # YOUR CODE GOES HERE #
-    return
+    return list(filter(
+        lambda tup: tup[1] in ['qualified', 'advanced', 'winner'],
+        dict(map(lambda name, status: (name, status), teams, results)).items()))
