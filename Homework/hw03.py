@@ -4,8 +4,6 @@ Name: Yanhao Wu
 PID: A19061338
 Source:
 """
-from faiss.contrib.evaluation import sort_range_res_1
-from libcst.tests.pyre.simple_class import items
 
 
 # Question 1.1
@@ -46,7 +44,9 @@ def operate_nums(lst):
     """
     assert isinstance(lst, list)
     assert all([isinstance(i, int) for i in lst])
-    return [i * 3 if i % 2 == 0 else i * 2 for i in lst]
+    mutiplier = 3
+    doub = 2
+    return [i * mutiplier if i % doub == 0 else i * doub for i in lst]
 
 # Question 1.2
 def string_lengths(text, nums):
@@ -138,9 +138,9 @@ def process_dict(input_dict):
     assert all(isinstance(i, list) for i in input_dict.values())
     assert all(isinstance(j, int) for i in input_dict for j in i)
     assert all(isinstance(j, str) for i in input_dict.values() for j in i)
-    num = [len(i) for i in input_dict]
+    leng_tup = [len(i) for i in input_dict]
     length = [sum([len(j) for j in i]) for i in input_dict.values()]
-    return [num[i] + length[i] for i in range(len(num))]
+    return [leng_tup[i] + length[i] for i in range(len(leng_tup))]
 
 # Question 2
 def unusual_sort(indices, items):
@@ -194,8 +194,8 @@ def unusual_sort(indices, items):
     assert all([isinstance(i, int) for i in indices])
     sorted_lst = sorted(indices)
     assert sorted_lst == [i for i in range(len(indices))]
-    dic = {indices[i]: items[i] for i in range(len(indices))}
-    return [(dic[sorted_lst[i]], indices[i], sorted_lst[i])
+    corr_dic = {indices[i]: items[i] for i in range(len(indices))}
+    return [(corr_dic[sorted_lst[i]], indices[i], sorted_lst[i])
             for i in range(len(indices))]
 
 # Question 3
@@ -232,18 +232,17 @@ def change_input(strange_list):
     """
     assert isinstance(strange_list, list)
     assert all([isinstance(i, str) for i in strange_list])
-    return ["".join([str(int(j) * 2) if j.isdigit() else
+    doub = 2
+    return ["".join([str(int(j) * doub) if j.isdigit() else
                      j.upper() if j.islower() and j in "aeiou" else
                      j for j in i]) for i in strange_list]
 
 # Question 4
 def change_input_even_more(strange_list):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
-
+    replace the lowercase vowels to uppercase,
+    double the integer and move them to the end
+    of the string, and remain the others.
     >>> change_input_even_more(["3.14IS PIE", "11My aGe iS"])
     ['.IS PIE628', 'My AGE IS22']
     >>> change_input_even_more(["go t6o sleep at ", \
@@ -255,17 +254,35 @@ def change_input_even_more(strange_list):
     AssertionError
 
     # Add at least 3 doctests below here #
+    >>> change_input_even_more([1])
+    Traceback (most recent call last):
+    ...
+    AssertionError
+
+    >>> change_input_even_more(92992)
+    Traceback (most recent call last):
+    ...
+    AssertionError
+
+    >>> change_input_even_more(["asdfa34", ["asldoijf"]])
+    Traceback (most recent call last):
+    ...
+    AssertionError
     """
-    # YOUR CODE GOES HERE #
-    return
+    assert isinstance(strange_list, list)
+    assert all([isinstance(i, str) for i in strange_list])
+    doub = 2
+    return ["".join([ch.upper() if ch in "aeiou" else ch for
+                     ch in s if not ch.isdigit()])+
+            "".join([str(int(ch) * doub)
+            for ch in s if
+            ch.isdigit()])for
+            s in strange_list]
 
 # Question 5.1
 def cheapest_gas(gas_stations, mileage):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    find the cheapest gas station in the available range.
 
     >>> gas_stations = { \
         'Shell': [(20, 5.2), (30, 5.3), (50, 5.6), (80, 5.3)], \
@@ -278,17 +295,25 @@ def cheapest_gas(gas_stations, mileage):
     'Shell'
 
     # Add at least 3 doctests below here #
+    >>> cheapest_gas(gas_stations, 70)
+    'Shell'
+
+    >>> cheapest_gas(gas_stations, 80)
+    'Shell'
+
+    >>> cheapest_gas(gas_stations, 50)
+    'Shell'
     """
-    # YOUR CODE GOES HERE #
-    return
+    within_range = {i[1]: brand for brand, value in
+                    gas_stations.items() for i in value
+                    if i[0] <= mileage}
+    return within_range[min(within_range.keys())]
+
 
 # Question 5.2
 def cheapest_average_gas(gas_stations, mileage):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    find the average cheapest gas station in the available range.
 
     >>> gas_stations = { \
         'Shell': [(20, 5.2), (30, 5.3), (50, 5.6), (80, 5.3)], \
@@ -301,17 +326,33 @@ def cheapest_average_gas(gas_stations, mileage):
     'Shell'
 
     # Add at least 3 doctests below here #
+    >>> cheapest_average_gas(gas_stations, 70)
+    'Arco'
+
+    >>> cheapest_average_gas(gas_stations, 80)
+    'Arco'
+
+    >>> cheapest_average_gas(gas_stations, 50)
+    'Arco'
     """
-    # YOUR CODE GOES HERE #
-    return
+    within_range = {i[1]: brand for brand, value in
+                    gas_stations.items() for i in value
+                    if i[0] <= mileage}
+    dic_templ = {i: [] for i in within_range.values()}
+    [dic_templ[brand].append(price) for price, brand in within_range.items()]
+    mean = {sum(price) / len(price) : brand
+            for brand, price in dic_templ.items()}
+    return mean[min(mean.keys())]
+
+
 
 # Question 6
 def new_orders(orders, action, dish_name, amount):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    depending on the action and the dish name,
+    updating the orders by minusing or adding the
+    amount to original price. If price is lower than
+    0, then set it to 0
 
     >>> orders = {'pizza': 10, 'burger': 5}
     >>> new_orders(orders, 'add', 'pizza', 5)
@@ -329,6 +370,27 @@ def new_orders(orders, action, dish_name, amount):
     AssertionError
 
     # Add at least 3 doctests below here #
+    >>> new_orders(orders, 'a', 'burger', 3)
+    Traceback (most recent call last):
+    ...
+    AssertionError
+
+    >>> new_orders(orders, 'remove', 'burger', 100)
+    {'pizza': 10, 'burger': 0}
+
+    >>> new_orders(orders, 'remove', 'burger', -3)
+    Traceback (most recent call last):
+    ...
+    AssertionError
     """
-    # YOUR CODE GOES HERE #
-    return
+    assert all([isinstance(orders, dict), isinstance(action, str),
+            isinstance(dish_name, str), isinstance(amount, int)])
+    assert [isinstance(i, str) for i in orders.keys()]
+    assert [isinstance(i, int) for i in orders.values()]
+    assert amount >= 0
+    assert action in ["add", "remove"]
+    return {dish: price + amount if action == 'add' and dish_name == dish
+                else 0 if action == 'remove' and dish_name == dish and
+                          price - amount < 0 else price - amount if
+    action == 'remove' and dish_name == dish else price
+                for dish, price in orders.items()}
