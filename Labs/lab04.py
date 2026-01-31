@@ -3,8 +3,6 @@ DSC 20 Winter 2026 Lab 04
 Name: Yanhao Wu
 PID: A19061338
 """
-from statsmodels.graphics.tukeyplot import results
-
 
 # Question 1.1
 def problem_1(int_lst, mult_factor):
@@ -273,4 +271,4 @@ def next_round_3(teams, results):
     """
     return list(filter(
         lambda tup: tup[1] in ['qualified', 'advanced', 'winner'],
-        dict(map(lambda name, status: (name, status), teams, results)).items()))
+        dict(zip(teams, results)).items()))
