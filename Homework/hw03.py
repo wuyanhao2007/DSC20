@@ -92,7 +92,7 @@ def string_lengths(text, nums):
     """
     assert all([isinstance(text, list), isinstance(nums, list)])
     assert len(text) == len(nums)
-    assert all(isinstance(i, int) for i in nums)
+    assert all([isinstance(i, int) for i in nums])
     assert all(len(i) != 0 for i in text)
     assert all(i >= 0 for i in nums)
     return [len(text[i]) > nums[i] for i in range(len(text))]
