@@ -1,7 +1,7 @@
 """
 DSC 20 Spring 2025 Lab 05
-Name: TODO
-PID: TODO
+Name: Yanhao Wu
+PID: A19061338
 """
 
 # PRE-DEFINED FUNCTIONS
@@ -41,8 +41,7 @@ def vector_op(lst, func):
     >>> vector_op(lst, cubed)
     [1000, 8000, 27000]
     """
-    # YOUR CODE GOES HERE #
-    return
+    return [func(i) for i in lst]
 
 # Question 2
 def matrix_op(lsts, func):
@@ -66,8 +65,8 @@ def matrix_op(lsts, func):
     >>> matrix_op(lsts, identity)
     [[5, 15], [25, 35]]
     """
-    # YOUR CODE GOES HERE #
-    return
+
+    return [[func(j) for j in i] for i in lsts]
 
 # Question 3
 def hop_hop(lst, func):
@@ -91,8 +90,7 @@ def hop_hop(lst, func):
     >>> hop_hop(lst, cubed)
     [1000000000, 512000000000, 19683000000000]
     """
-    # YOUR CODE GOES HERE #
-    return
+    return [func(func(i)) for i in lst]
 
 # Question 4
 def hop_many(lst, func, iterations):
@@ -117,8 +115,11 @@ def hop_many(lst, func, iterations):
     >>> hop_many(lst, lambda x: x - 1, 4)
     [-3, -2, -1]
     """
-    # YOUR CODE GOES HERE #
-    return
+    def iter_func(element):
+        for i in range(iterations):
+            element = func(element)
+        return element
+    return [iter_func(i) for i in lst]
 
 # Question 5
 def grades_stats(input_lst, choice):
@@ -147,35 +148,65 @@ def grades_stats(input_lst, choice):
     (2, 2.33)
     """
     def find_median(): # Calculate median
-        # YOUR CODE GOES HERE #
-        return
+        sort_lst = sorted(input_lst)
+        if len(sort_lst) % 2 == 0:
+            return (sort_lst[int(len(sort_lst)/2)]
+                    + sort_lst[int(len(sort_lst)/2)+1])
+        else:
+            return sort_lst[len(sort_lst)//2]
+
 
     def find_mean(): # Calculate mean
-        # YOUR CODE GOES HERE #
-        return
+        return round(sum(input_lst) / len(input_lst), 2)
 
-    # YOUR CODE GOES HERE #
-    return
+    if choice == 1:
+        return find_median()
+    elif choice == 2:
+        return find_mean()
+    else:
+        return find_median(), find_mean()
+
 
 # Question 6
-def calculate_final_price(original_price, category, season):
+def calculate_total_price(base_price, meal_type, meal_time):
     """
-    Calculates price of item after discount.
+    Calculates total price of meal after discounts.
     --
     Parameters:
-        original_price: number representing price of item
-        category: string category of item that category discount is based on
-        season: string season that seasonal discount is based on
+    base_price: number representing price of meal
+    meal_type: string meal type that meal discount is based
+    on
+    meal_time: string meal time that time discount is based on
     --
     Returns:
-        The final price of item after applying potential discounts
-    
-    >>> calculate_final_price(120, 'electronics', 'Spring')
-    108.0
-    >>> calculate_final_price(45, 'clothing', 'Winter')
-    30.6
-    >>> calculate_final_price(100, 'appliance', 'Spring')
-    100
+    The final price of the meal after applying potential discounts
+
+    >>> calculate_total_price(50, 'vegan', 'breakfast')
+    38.25
+    >>> calculate_total_price(40, 'meat', 'lunch')
+    34.2
+    >>> calculate_total_price(25, 'snack', 'dinner')
+    25
     """
-    # YOUR CODE GOES HERE #
-    return
+
+    def apply_type_discount(meal_type):
+        if meal_type == 'vegan':
+            return 0.85
+        elif meal_type == 'meat':
+            return 0.9
+        elif meal_type == 'dessert':
+            return 0.95
+        return 1
+
+    def apply_time_discount(meal_time):
+        if meal_time == 'breakfast':
+            return 0.90
+        elif meal_time == 'lunch':
+            return 0.95
+        elif meal_time == 'dinner':
+            return 1
+        return 1
+
+    return round((base_price * apply_type_discount(meal_type)
+            * apply_time_discount(meal_time)), 2)
+

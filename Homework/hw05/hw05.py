@@ -1,8 +1,8 @@
 """
 DSC 20 Winter 2026 Homework 05
-Name: TODO
-PID: TODO
-Source: TODO
+Name: Yanhao Wu
+PID: A19061338
+Source:
 """
 
 # Question 1
