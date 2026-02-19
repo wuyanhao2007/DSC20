@@ -134,13 +134,13 @@ def process_dict(input_dict):
     AssertionError
     """
     assert isinstance(input_dict, dict)
-    assert all(isinstance(i, tuple) for i in input_dict)
-    assert all(isinstance(i, list) for i in input_dict.values())
-    assert all(isinstance(j, int) for i in input_dict for j in i)
-    assert all(isinstance(j, str) for i in input_dict.values() for j in i)
-    leng_tup = [len(i) for i in input_dict]
-    length = [sum([len(j) for j in i]) for i in input_dict.values()]
-    return [leng_tup[i] + length[i] for i in range(len(leng_tup))]
+    assert all(isinstance(k, tuple) for k in input_dict)
+    assert all(isinstance(v, list) for v in input_dict.values())
+    assert all(isinstance(j, int) for k in input_dict for j in k)
+    assert all(isinstance(j, str) for v in input_dict.values() for j in v)
+    return [
+        len(k) + sum(len(s) for s in v)
+        for k, v in input_dict.items()]
 
 # Question 2
 def unusual_sort(indices, items):
@@ -189,14 +189,16 @@ def unusual_sort(indices, items):
     ...
     AssertionError
     """
-    assert all([isinstance(indices, list), isinstance(items, list)])
+    assert isinstance(indices, list) and isinstance(items, list)
     assert len(indices) == len(items)
-    assert all([isinstance(i, int) for i in indices])
+    assert all(isinstance(i, int) for i in indices)
     sorted_lst = sorted(indices)
-    assert sorted_lst == [i for i in range(len(indices))]
+    assert sorted_lst == list(range(len(indices)))
     corr_dic = {indices[i]: items[i] for i in range(len(indices))}
-    return [(corr_dic[sorted_lst[i]], indices[i], sorted_lst[i])
-            for i in range(len(indices))]
+    pos_dic = {indices[i]: i for i in range(len(indices))}
+    return [
+        (corr_dic[k], pos_dic[k], k)
+        for k in sorted_lst]
 
 # Question 3
 def change_input(strange_list):

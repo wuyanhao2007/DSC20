@@ -202,6 +202,8 @@ def several_files(files_lst, file_out, min_year):
                     out_lst.append(parts[0] + "," + parts[1] +
                                    "," + new_dob)
     header += "\n".join(out_lst)
+    if out_lst:
+        header += "\n"
     with open(file_out, "w") as fo:
         fo.write(header)
 
@@ -260,16 +262,20 @@ def postcards(info_list):
     second_lst = 2
     assert isinstance(info_list, list)
     assert all(list(map(lambda x: True if isinstance(x, tuple)
-    else False,info_list)))
-    strip_name = lambda x : x[0].split(" ")
+    else False, info_list)))
+
+    assert all(list(map(lambda x: isinstance(x[1], int) and x[1] >= 0,
+                        info_list)))
+
+    strip_name = lambda x: x[0].split(" ")
     filter_lst = list(filter(lambda x: str.lower(x[-1]) ==
                                        "priority", info_list))
     return dict(map(
         lambda x: (
-            x[0] , str.lower(strip_name(x)[0][0:third_lst]
-                             + str(x[second_lst])+ strip_name(x)[1]
-                             + "$" + str(x[1])[-1]+ x[third_lst][::-1]
-                             )), filter_lst
+            x[0], str.lower(strip_name(x)[0][0:third_lst]
+                            + str(x[second_lst]) + strip_name(x)[1]
+                            + "$" + str(x[1])[-1] + x[third_lst][::-1]
+                            )), filter_lst
     ))
 
 
