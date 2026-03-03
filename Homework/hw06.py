@@ -51,27 +51,36 @@ def randomize(*args):
     {'garbage': [{1, 2}, {'key': 'val'}]}
     """
     divide = 2
-    return_dic = {}
+    result = {}
     for arg in args:
         if isinstance(arg, bool):
-            return_dic.setdefault('garbage', []).append(arg)
+            key = 'garbage'
+            value = arg
         elif isinstance(arg, int):
+            key = 'int'
             if arg % divide == 0:
-                return_dic.setdefault('int', []).append(True)
+                value = True
             else:
-                return_dic.setdefault('int', []).append(False)
+                value = False
         elif isinstance(arg, float):
+            key = 'float'
             if arg < 0:
-                return_dic.setdefault('float', []).append(-arg)
+                value = -arg
             else:
-                return_dic.setdefault('float', []).append(int(arg))
+                value = int(arg)
         elif isinstance(arg, str):
-            return_dic.setdefault('str', []).append(arg[::divide])
+            key = 'str'
+            value = arg[::divide]
         elif isinstance(arg, list):
-            return_dic.setdefault('list', []).append(len(arg))
+            key = 'list'
+            value = len(arg)
         else:
-            return_dic.setdefault('garbage', []).append(arg)
-    return return_dic
+            key = 'garbage'
+            value = arg
+        if key not in result:
+            result[key] = []
+        result[key].append(value)
+    return result
 
 #Question 2
 def rearrange_args(*args, **kwargs):
