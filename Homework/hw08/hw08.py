@@ -156,11 +156,13 @@ class FlyingBroom:
           remaining.
         """
         prev_score = self.high_score()
+        square = 2
+        root = 0.5
         if self.magic_power > 0:
             self.magic_power -= 1
-            self.speed = int(((self.speed + charm_power) ** 2
-                          + (self.speed - charm_power) ** 2 ) ** 0.5)
-            if self.high_score() >= 2 * prev_score:
+            self.speed = int(((self.speed + charm_power) ** square
+                          + (self.speed - charm_power) ** square ) ** root)
+            if self.high_score() >= square * prev_score:
                 self.lives += 1
             return True
         return False
@@ -212,20 +214,21 @@ class FlyingBroom:
         Parameters:
         - other_broom (object): Broom object
         """
+        speed = 50
         if other_broom.size < self.size:
-            other_broom.speed -= 50
-            self.speed += 50
+            other_broom.speed -= speed
+            self.speed += speed
             if other_broom.speed <= 0:
                 other_broom.lives -= 1
-                other_broom.speed = 50
+                other_broom.speed = speed
                 self.size += 1
             return True
         elif other_broom.size > self.size:
-            self.speed -= 50
-            other_broom.speed += 50
+            self.speed -= speed
+            other_broom.speed += speed
             if self.speed <= 0:
                 self.lives -= 1
-                self.speed = 50
+                self.speed = speed
                 other_broom.size += 1
             return False
         else:
@@ -235,7 +238,9 @@ class FlyingBroom:
         """
         Formula for high score and returns it.
         """
-        return self.speed * 100 + self.lives * 500
+        para_one = 100
+        para_two = 500
+        return self.speed * para_one + self.lives * para_two
 
 class NormalBroom(FlyingBroom):
     """
@@ -260,7 +265,8 @@ class NormalBroom(FlyingBroom):
         if isinstance(other_broom, CursedBroom):
             self.lives -= 1
             self.speed = 30
-            other_broom.speed += 50
+            speed = 50
+            other_broom.speed += speed
             other_broom.size += 1
             return False
         else:
@@ -289,17 +295,19 @@ class CursedBroom(FlyingBroom):
         """
         Formula for a CursedBroom high score and returns it.
         """
-        return self.speed * 200 + self.lives * 300 + 250
+        para_one = 200
+        para_two = 300
+        para_three = 250
+        return (self.speed * para_one + self.lives
+                * para_two + para_three)
 
 
 # Question 2
 # Q2, Part 1
 def fix_1(lst1, lst2):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    divide each element in lst1 by each element
+    in lst2, and append each result to an output list.
 
     >>> fix_1([1, 2, 3], [0, 1])
     [1.0, 2.0, 3.0]
@@ -313,16 +321,18 @@ def fix_1(lst1, lst2):
     out = []
     for div in lst2:
         for num in lst1:
-            out.append(num / div) # add try-catch block
+            try:
+                out.append(num / div) # add try-catch block
+            except ZeroDivisionError:
+                continue
     return out
 
 # Q2, Part 2
 def fix_2(*filepaths):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    If we are able to open the file, we should print a
+    string '{filepath} opened'. If we are not able to
+     open the file, we should print '{filepath} not found'
 
     >>> fix_2('files/a.txt', 'files/b.txt', 'files/c.txt')
     files/a.txt opened
@@ -334,16 +344,21 @@ def fix_2(*filepaths):
     # NO DOCTESTS NEEDED #
     """
     for filepath in filepaths:
-        cur_file = open(filepath, "r") # add try-catch block
-        cur_file.close()
+        try:
+            cur_file = open(filepath, "r") # add try-catch block
+            print(filepath + " opened")
+            cur_file.close()
+        except FileNotFoundError:
+            print(filepath + " not found")
+
 
 # Q2, Part 3
 def fix_3(lst):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    add each element with its following element
+     in the list and return all of the summed values
+     in a list.
+
 
     >>> fix_3([1, '1', 2, None])
     <class 'TypeError'>
@@ -361,17 +376,28 @@ def fix_3(lst):
     """
     sum_of_pairs = []
     for i, _ in enumerate(lst):
-        sum_of_pairs.append(lst[i] + lst[i + 1]) # add try-catch block
+        try:
+            sum_of_pairs.append(lst[i] + lst[i + 1]) # add try-catch block
+        except IndexError as e:
+            print(type(e))
+        except TypeError as e:
+            print(type(e))
     return sum_of_pairs
 
 
 # Question 3
 def check_inputs(input1, input2):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    Checks (in this order):
+    input1 should be a list
+    All of the values in input1 should be numeric.
+    It is ok if input1 is empty
+    If there are multiple non-numeric values, you only
+     need to throw an exception for the first non-numeric
+     value encountered
+    input2 should be numeric
+    input2 should be contained in input1
+
 
     >>> check_inputs([1, 2.0, 3.0, 4], 4)
     'Input validated'
@@ -393,17 +419,38 @@ def check_inputs(input1, input2):
     TypeError: input2 is not the correct type
     
     # Add at least 3 doctests below here. Do NOT delete this line. #
+    >>> check_inputs([5, 6, 7], 5)
+    'Input validated'
+
+    >>> check_inputs([1, 2, 3], 10)
+    Traceback (most recent call last):
+    ...
+    TypeError: input2 not in input1
+
+    >>> check_inputs([1, 2, None], 1)
+    Traceback (most recent call last):
+    ...
+    TypeError: The element at index 2 is not numeric
     """
-    return
+    if not isinstance(input1, list):
+        raise TypeError("input1 is not the correct type")
+    for i, j in enumerate(input1):
+        if not isinstance(j, (int, float)):
+            raise TypeError(f"The element at index {i} "
+                            f"is not numeric")
+    if not isinstance(input2, (int, float)):
+        raise TypeError("input2 is not the correct type")
+    if not input2 in input1:
+        raise TypeError("input2 not in input1")
+    return "Input validated"
+
 
 
 # Question 4
 def load_file(filepath):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+     checking the correctness of a given filepath and its
+      corresponding file
 
     >>> load_file(1)
     Traceback (most recent call last):
@@ -421,5 +468,28 @@ def load_file(filepath):
     FileNotFoundError: files/nonexistant.txt does not exist
     
     # Add at least 3 doctests below here. Do NOT delete this line. #
+    >>> load_file('files/one_word.txt')
+    1
+
+    >>> load_file('files/b.txt')
+    Traceback (most recent call last):
+    ...
+    FileNotFoundError: files/b.txt does not exist
+
+    >>> load_file(None)
+    Traceback (most recent call last):
+    ...
+    TypeError: filepath is not a string
     """
-    return
+    if not isinstance(filepath, str):
+        raise TypeError("filepath is not a string")
+    try:
+        with open(filepath, "r") as f:
+            lines = f.read()
+            if len(lines) == 0:
+                raise ValueError("File is empty")
+            content = lines.strip()
+            words = content.split()
+            return len(words)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"{filepath} does not exist")
