@@ -1,7 +1,7 @@
 """
 DSC 20 Project Winter 2026
-Name(s): TODO
-PID(s):  TODO
+Name(s): Yanhao Wu
+PID(s):  A19061338
 Sources: None
 """
 
@@ -77,9 +77,26 @@ class RGBImage:
         """
         # YOUR CODE GOES HERE #
         # Raise exceptions here
-        self.pixels = ...
-        self.num_rows = ...
-        self.num_cols = ...
+        if not isinstance(pixels, list):
+            raise TypeError
+        if len(pixels) < 1:
+            raise TypeError
+        if not (isinstance(pixels[0], list) and len(pixels[0]) >= 1):
+            raise TypeError
+        if len(set([len(row) for row in pixels])) != 1:
+            raise TypeError
+        if not all([isinstance(col, list)
+                    for row in pixels for col in row]):
+            raise TypeError
+        if not all([len(col) == 3 for row in pixels for col in row]):
+            raise TypeError
+        if not all([(isinstance(rgb, int) and (0 <= rgb <= 255))
+                    for row in pixels for col in row for rgb in col]):
+            raise ValueError
+        self.pixels = pixels
+        self.num_rows = len(pixels)
+        self.num_cols = len(pixels[0])
+
 
     def size(self):
         """
@@ -93,7 +110,7 @@ class RGBImage:
         >>> img.size()
         (1, 2)
         """
-        # YOUR CODE GOES HERE #
+        return self.num_rows, self.num_cols
 
     def get_pixels(self):
         """
@@ -116,7 +133,7 @@ class RGBImage:
         >>> id(pixels[0][0]) != id(img_pixels[0][0]) # Check pixel
         True
         """
-        # YOUR CODE GOES HERE #
+        return copy.deepcopy(self.pixels)
 
     def copy(self):
         """
@@ -133,7 +150,9 @@ class RGBImage:
         >>> id(img_copy) != id(img)
         True
         """
-        # YOUR CODE GOES HERE #
+        pixels = self.get_pixels()
+        return RGBImage(pixels)
+
 
     def get_pixel(self, row, col):
         """
@@ -155,7 +174,13 @@ class RGBImage:
         >>> img.get_pixel(0, 0)
         (255, 255, 255)
         """
-        # YOUR CODE GOES HERE #
+        if not (isinstance(row, int) and isinstance(col, int)):
+            raise TypeError
+        if self.num_rows - 1 < row or self.num_cols - 1 < col:
+            raise ValueError
+        if row < 0 or col < 0:
+            raise ValueError
+        return tuple(self.pixels[row][col])
 
     def set_pixel(self, row, col, new_color):
         """
@@ -178,7 +203,21 @@ class RGBImage:
         >>> img.pixels
         [[[255, 0, 0], [0, 0, 0]]]
         """
-        # YOUR CODE GOES HERE #
+        if not (isinstance(row, int) and isinstance(col, int)):
+            raise TypeError
+        if self.num_rows - 1 < row or self.num_cols - 1 < col:
+            raise ValueError
+        if row < 0 or col < 0:
+            raise ValueError
+        if not (isinstance(new_color, tuple) and len(new_color)
+                == 3 and all([isinstance(i, int)
+                              for i in new_color])):
+            raise TypeError
+        if not all([i <= 255 for i in new_color]):
+            raise ValueError
+        for i in range(3):
+            if new_color[i] >= 0:
+                self.pixels[row][col][i] = new_color[i]
 
 
 # Part 2: Image Processing Template Methods #
@@ -197,8 +236,7 @@ class ImageProcessingTemplate:
         >>> img_proc.cost
         0
         """
-        # YOUR CODE GOES HERE #
-        self.cost = ...
+        self.cost = 0
 
     def get_cost(self):
         """
@@ -210,7 +248,7 @@ class ImageProcessingTemplate:
         >>> img_proc.get_cost()
         50
         """
-        # YOUR CODE GOES HERE #
+        return self.cost
 
     def negate(self, image):
         """
@@ -241,7 +279,9 @@ class ImageProcessingTemplate:
         True
         >>> img_save_helper('img/out/test_image_32x32_negate.png', img_negate)# 6
         """
-        # YOUR CODE GOES HERE #
+        pixels = [[[255 - rgb for rgb in col] for col in row] for
+                  row in image.pixels]
+        return RGBImage(pixels)
 
     def grayscale(self, image):
         """
@@ -257,7 +297,11 @@ class ImageProcessingTemplate:
         True
         >>> img_save_helper('img/out/test_image_32x32_gray.png', img_gray)
         """
-        # YOUR CODE GOES HERE #
+        pixels = [[[(col[0] + col[1] + col[2]) //
+                    3, (col[0] + col[1] + col[2]) //
+                    3, (col[0] + col[1] + col[2]) // 3]
+                   for col in row] for row in image.pixels]
+        return RGBImage(pixels)
 
     def rotate_180(self, image):
         """
@@ -273,7 +317,9 @@ class ImageProcessingTemplate:
         True
         >>> img_save_helper('img/out/test_image_32x32_rotate.png', img_rotate)
         """
-        # YOUR CODE GOES HERE #
+        row_rotate = image.pixels[::-1]
+        col_rotate = [row[::-1] for row in row_rotate]
+        return RGBImage(col_rotate)
 
     def get_average_brightness(self, image):
         """
@@ -284,7 +330,10 @@ class ImageProcessingTemplate:
         >>> img_proc.get_average_brightness(img)
         86
         """
-        # YOUR CODE GOES HERE #
+        pixels = [(col[0] + col[1] + col[2]) // 3 for row in image.pixels for col in row]
+        all_avg = sum(pixels) // len(pixels)
+        return all_avg
+
 
     def adjust_brightness(self, image, intensity):
         """
@@ -298,7 +347,14 @@ class ImageProcessingTemplate:
         True
         >>> img_save_helper('img/out/test_image_32x32_adjusted.png', img_adjust)
         """
-        # YOUR CODE GOES HERE #
+        if not isinstance(intensity, float):
+            raise TypeError
+        pixels = [[[int(rgb * intensity)
+                    if 0 <= int(rgb * intensity) <= 255
+                    else 255 if int(rgb * intensity) > 255
+        else 0 for rgb in col] for col in row] for
+                  row in image.pixels]
+        return RGBImage(pixels)
 
 
 # Part 3: Standard Image Processing Methods #
