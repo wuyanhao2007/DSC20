@@ -4,7 +4,6 @@ Name: Yanhao Wu
 PID: A19061338
 Source:
 """
-from nltk import invert_graph
 
 
 # Question 1

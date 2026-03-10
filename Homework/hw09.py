@@ -1,8 +1,8 @@
 """
 DSC 20 Winter 2026 Homework 09
-Name: TODO
-PID: TODO
-Source: TODO
+Name: Yanhao Wu
+PID: A19061338
+Source:
 """
 
 # Question 1
@@ -17,8 +17,7 @@ def question_1():
 	>>> any([True if (i!=0 and i!=1) else False for i in answer])
 	False
     """
-    # YOUR CODE GOES HERE #
-    return
+    return [0, 0, 0, 1, 1, 0, 0, 1, 0, 1]
 
 
 # Question 2
@@ -33,8 +32,7 @@ def question_2():
 	>>> any([True if (i!=0 and i!=1) else False for i in answer ])
 	False
     """
-    # YOUR CODE GOES HERE #
-    return
+    return [1, 1, 1, 1, 1]
 
 
 # Question 3
