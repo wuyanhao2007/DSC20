@@ -38,10 +38,8 @@ def question_2():
 # Question 3
 def reverse_list(lst):
     """ 
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+    reverse the list without creating a new list
+
 
     >>> x = [3, 2, 4, 5]
     >>> reverse_list(x)
@@ -61,18 +59,31 @@ def reverse_list(lst):
     [1]
 
     # Add at least 3 doctests below here. DO NOT DELETE THIS LINE. #
+    >>> x = [1, 2]
+    >>> reverse_list(x)
+    >>> x
+    [2, 1]
+    >>> x = [7, 8, 9]
+    >>> reverse_list(x)
+    >>> x
+    [9, 8, 7]
+    >>> x = [10, 20, 30, 40]
+    >>> reverse_list(x)
+    >>> x
+    [40, 30, 20, 10]
     """
-    # YOUR CODE GOES HERE #
-    return
+    demo = 2
+    for i in range(len(lst) // demo):
+        temp = lst[i]
+        lst[i] = lst[len(lst)-1-i]
+        lst[len(lst) -1- i] = temp
+
 
 
 # Question 4
 def swap_lists(alist1, alist2):
     """
-    ##############################################################
-    # TODO: Replace this block of comments with your own         #
-    # method description and add at least 3 more doctests below. #
-    ##############################################################
+   swap two lists without creating a new list
 
     >>> list1 = [1, 2]
     >>> list2 = [3, 4]
@@ -91,6 +102,32 @@ def swap_lists(alist1, alist2):
     [4, 2, 6, 8, 90, 45]
 
     # Add at least 3 doctests below here. DO NOT DELETE THIS LINE. #
+    >>> list1 = [5]
+    >>> list2 = [9]
+    >>> swap_lists(list1, list2)
+    >>> print(list1)
+    [9]
+    >>> print(list2)
+    [5]
+
+    >>> list1 = [1, 1]
+    >>> list2 = [2, 2]
+    >>> swap_lists(list1, list2)
+    >>> print(list1)
+    [2, 2]
+    >>> print(list2)
+    [1, 1]
+
+    >>> list1 = [7, 8, 9]
+    >>> list2 = [1, 2, 3]
+    >>> swap_lists(list1, list2)
+    >>> print(list1)
+    [1, 2, 3]
+    >>> print(list2)
+    [7, 8, 9]
     """
-    # YOUR CODE GOES HERE #
-    return
+    for i in range(len(alist1)):
+        for j in range(len(alist2)):
+            temp = alist1[i]
+            alist1[i] = alist2[len(alist2) - 1 - j]
+            alist2[len(alist2) - 1 - j] = temp

@@ -372,8 +372,9 @@ class StandardImageProcessing(ImageProcessingTemplate):
         >>> img_proc.cost
         0
         """
-        # YOUR CODE GOES HERE #
-        self.cost = ...
+
+        self.cost = 0
+        self.coupon = 0
 
     def negate(self, image):
         """
@@ -394,26 +395,53 @@ class StandardImageProcessing(ImageProcessingTemplate):
         >>> img_negate.pixels == img_exp.pixels # Check negate output
         True
         """
-        # YOUR CODE GOES HERE #
+        if self.coupon > 0:
+            self.coupon -= 1
+            return super().negate(image)
+
+        else:
+            self.cost += 5
+            return super().negate(image)
+
 
     def grayscale(self, image):
         """
         Returns a grayscale copy of the given image
 
         """
-        # YOUR CODE GOES HERE #
+        if self.coupon > 0:
+            self.coupon -= 1
+            return super().grayscale(image)
+
+        else:
+            self.cost += 6
+            return super().grayscale(image)
+
 
     def rotate_180(self, image):
         """
         Returns a rotated version of the given image
         """
-        # YOUR CODE GOES HERE #
+        if self.coupon > 0:
+            self.coupon -= 1
+            return super().rotate_180(image)
+
+        else:
+            self.cost += 10
+            return super().rotate_180(image)
+
 
     def adjust_brightness(self, image, intensity):
         """
         Returns a new image with adjusted brightness level
         """
-        # YOUR CODE GOES HERE #
+        if self.coupon > 0:
+            self.coupon -= 1
+            return super().adjust_brightness(image, intensity)
+        else:
+            self.cost += 1
+            return super().adjust_brightness(image, intensity)
+
 
     def redeem_coupon(self, amount):
         """
@@ -428,7 +456,11 @@ class StandardImageProcessing(ImageProcessingTemplate):
         >>> img_proc.get_cost()
         0
         """
-        # YOUR CODE GOES HERE #
+        if not isinstance(amount, int):
+            raise TypeError
+        if amount <= 0:
+            raise ValueError
+        self.coupon += amount
 
 
 # Part 4: Premium Image Processing Methods #
@@ -446,8 +478,7 @@ class PremiumImageProcessing(ImageProcessingTemplate):
         >>> img_proc.get_cost()
         50
         """
-        # YOUR CODE GOES HERE #
-        self.cost = ...
+        self.cost = 50
 
     def pixelate(self, image, block_dim):
         """
@@ -462,7 +493,29 @@ class PremiumImageProcessing(ImageProcessingTemplate):
         True
         >>> img_save_helper('img/out/test_image_32x32_pixelate.png', img_pixelate)
         """
-        # YOUR CODE GOES HERE #
+        result_pixels = image.get_pixels()
+        height = len(result_pixels)
+        width = len(result_pixels[0])
+        for i in range(0, height, block_dim):
+            for j in range(0, width, block_dim):
+                r_sum, g_sum, b_sum = 0, 0, 0
+                count = 0
+                for q in range(block_dim):
+                    for p in range(block_dim):
+                        if i + q < height and j + p < width:
+                            r, g, b = result_pixels[i + q][j + p]
+                            r_sum += r
+                            g_sum += g
+                            b_sum += b
+                            count += 1
+                r_avg = r_sum // count
+                g_avg = g_sum // count
+                b_avg = b_sum // count
+                for q in range(block_dim):
+                    for p in range(block_dim):
+                        if i + q < height and j + p < width:
+                            result_pixels[i + q][j + p] = [r_avg, g_avg, b_avg]
+        return RGBImage(result_pixels)
 
     def edge_highlight(self, image):
         """
@@ -476,8 +529,25 @@ class PremiumImageProcessing(ImageProcessingTemplate):
         True
         >>> img_save_helper('img/out/test_image_32x32_edge.png', img_edge)
         """
-        # YOUR CODE GOES HERE #
-
+        result = image.get_pixels()
+        result = [[sum(pixel) // 3 for pixel in row] for row in result]
+        height = len(result)
+        width = len(result[0])
+        new_result = [[0] * width for _ in range(height)]
+        for i in range(height):
+            for j in range(width):
+                total = 0
+                for q in range(-1, 2):
+                    for p in range(-1, 2):
+                        ni, nj = i + q, j + p
+                        if 0 <= ni < height and 0 <= nj < width:
+                            if q == 0 and p == 0:
+                                total += result[ni][nj] * 8
+                            else:
+                                total += result[ni][nj] * -1
+                new_result[i][j] = max(0, min(255, total))
+        new_result = [[[v, v, v] for v in row] for row in new_result]
+        return RGBImage(new_result)
 
 
 # Part 5: Image KNN Classifier #
@@ -494,7 +564,7 @@ class ImageKNNClassifier:
 
     def fit(self, data):
         """
-        Stores the given set of data and labels for later
+        Stores the given of data and labels for later
         """
         # YOUR CODE GOES HERE #
 
