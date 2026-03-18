@@ -213,7 +213,9 @@ class RGBImage:
                 == 3 and all([isinstance(i, int)
                               for i in new_color])):
             raise TypeError
-        if not all([i <= 255 for i in new_color]):
+        if not all(isinstance(i, int) for i in new_color):
+            raise TypeError
+        if not all(i <= 255 for i in new_color):
             raise ValueError
         for i in range(3):
             if new_color[i] >= 0:
@@ -347,13 +349,20 @@ class ImageProcessingTemplate:
         True
         >>> img_save_helper('img/out/test_image_32x32_adjusted.png', img_adjust)
         """
-        if not isinstance(intensity, float):
-            raise TypeError
-        pixels = [[[int(rgb * intensity)
-                    if 0 <= int(rgb * intensity) <= 255
-                    else 255 if int(rgb * intensity) > 255
-        else 0 for rgb in col] for col in row] for
-                  row in image.pixels]
+        pixels = []
+        for row in image.pixels:
+            new_row = []
+            for col in row:
+                new_pixel = []
+                for rgb in col:
+                    val = int(rgb * intensity)
+                    if val < 0:
+                        val = 0
+                    elif val > 255:
+                        val = 255
+                    new_pixel.append(val)
+                new_row.append(new_pixel)
+            pixels.append(new_row)
         return RGBImage(pixels)
 
 
@@ -372,7 +381,7 @@ class StandardImageProcessing(ImageProcessingTemplate):
         >>> img_proc.cost
         0
         """
-
+        super().__init__()
         self.cost = 0
         self.coupon = 0
 
@@ -478,6 +487,7 @@ class PremiumImageProcessing(ImageProcessingTemplate):
         >>> img_proc.get_cost()
         50
         """
+        super().__init__()
         self.cost = 50
 
     def pixelate(self, image, block_dim):
@@ -560,13 +570,21 @@ class ImageKNNClassifier:
         """
         Creates a new KNN classifier object
         """
-        # YOUR CODE GOES HERE #
+        self.k_neighbors = k_neighbors
 
     def fit(self, data):
         """
         Stores the given of data and labels for later
         """
-        # YOUR CODE GOES HERE #
+        if len(data) == 0:
+            raise ValueError()
+        images = [i[0].pixels for i in data]
+        image1 = images[0]
+        if not all([len(i) == len(image1)
+                    and len(i[0]) == len(image1[0])
+                    for i in images]):
+            raise ValueError()
+        self.data = data
 
     def distance(self, image1, image2):
         """
@@ -578,7 +596,20 @@ class ImageKNNClassifier:
         >>> knn.distance(img1, img2)
         15946.312896716909
         """
-        # YOUR CODE GOES HERE #
+        if not all([isinstance(image1, RGBImage),
+                    isinstance(image2, RGBImage)]):
+            raise TypeError()
+        pixel1 = image1.pixels
+        pixel2 = image2.pixels
+        if len(pixel1) != len(pixel2):
+            raise ValueError()
+        if len(pixel1[0]) != len(pixel2[0]):
+            raise ValueError()
+        pixels1 = [q for i in pixel1 for j in i for q in j]
+        pixels2 = [q for i in pixel2 for j in i for q in j]
+        diff = sum([(pixels1[i] - pixels2[i])
+                    ** 2 for i in range(len(pixels1))]) ** 0.5
+        return diff
 
     def vote(self, candidates):
         """
@@ -588,7 +619,8 @@ class ImageKNNClassifier:
         >>> knn.vote(['label1', 'label2', 'label2', 'label2', 'label1'])
         'label2'
         """
-        # YOUR CODE GOES HERE #
+        return max(set(candidates), key=candidates.count)
+
 
     def predict(self, image):
         """
@@ -597,7 +629,15 @@ class ImageKNNClassifier:
 
         The test for this method is located in the knn_tests method below
         """
-        # YOUR CODE GOES HERE #
+        if not hasattr(self, "data"):
+            raise ValueError()
+        dist = [(self.distance(image, i[0]), i[1]) for i in self.data]
+        dist.sort(key=lambda x: x[0])
+        return self.vote([i[1] for i in dist[:self.k_neighbors]])
+
+
+
+
 
 
 def knn_tests(test_img_path):
